@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f0f0f">
+  <meta name="description" content="TubeGround: ricerca video e riproduzione su Android.">
+  <title>TubeGround</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#home" aria-label="TubeGround Home">
+        <span class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 40 40"><rect x="1" y="5" width="38" height="30" rx="9"/><path d="M17 12.5a1.8 1.8 0 0 0-2.7 1.55v11.9A1.8 1.8 0 0 0 17 27.5l10-5.95a1.8 1.8 0 0 0 0-3.1z"/></svg>
+        </span>
+        <span class="brand-copy"><strong>TubeGround</strong></span>
+      </a>
+      <form id="search-form" class="search-form" autocomplete="off" role="search">
+        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.7"/><path d="m16 16 4.2 4.2"/></svg>
+        <input id="search-input" name="q" type="search" placeholder="Cerca o incolla un link" aria-label="Cerca video" list="search-suggestions" required>
+        <datalist id="search-suggestions"></datalist>
+        <button type="submit" class="search-submit" aria-label="Cerca"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.7"/><path d="m16 16 4.2 4.2"/></svg></button>
+      </form>
+      <button class="icon-button settings-button" id="open-settings" type="button" aria-label="Impostazioni" title="Impostazioni">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.8a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 0 0 0-6.4Z"/><path d="m19.4 13.5 1.1.9-1.4 2.4-1.4-.5a7.7 7.7 0 0 1-1.5.9l-.2 1.5h-2.8l-.3-1.5a7.7 7.7 0 0 1-1.5-.9l-1.4.5-1.4-2.4 1.1-.9a6.8 6.8 0 0 1 0-1.8l-1.1-.9 1.4-2.4 1.4.5a7.7 7.7 0 0 1 1.5-.9l.3-1.5h2.8l.2 1.5a7.7 7.7 0 0 1 1.5.9l1.4-.5 1.4 2.4-1.1.9a6.8 6.8 0 0 1 0 1.8Z" transform="translate(-1 -1) scale(1.04)"/></svg>
+      </button>
+    </header>
+
+    <nav class="tabs" aria-label="Sezioni principali">
+      <button class="tab active" data-view="home" type="button"><span class="tab-symbol" aria-hidden="true">⌂</span><span>Home</span></button>
+      <button class="tab" data-view="favs" type="button"><span class="tab-symbol" aria-hidden="true">♡</span><span>Preferiti</span><span id="fav-count" class="tab-count">0</span></button>
+      <button class="tab" data-view="history" type="button"><span class="tab-symbol" aria-hidden="true">◷</span><span>Cronologia</span></button>
+    </nav>
+
+    <main class="content-section">
+      <div class="section-heading">
+        <div><p class="section-eyebrow" id="section-eyebrow">PER TE</p><h2 id="section-title">Video consigliati</h2></div>
+        <button id="refresh-button" class="text-button" type="button" aria-label="Aggiorna elenco">↻</button>
+      </div>
+      <div id="status" class="status" role="status" aria-live="polite" hidden></div>
+      <div id="results" class="video-grid" aria-live="polite"></div>
+      <div id="empty-state" class="empty-state" hidden>
+        <div class="empty-orb" aria-hidden="true">▶</div><h3 id="empty-title">Nessun video da mostrare</h3><p id="empty-copy">Cerca un video o incolla un link YouTube.</p>
+      </div>
+      <footer class="footer"><span>TubeGround <span class="footer-dot">•</span> client indipendente</span><button id="footer-settings" type="button">Sorgente</button></footer>
+    </main>
+  </div>
+
+  <dialog id="settings-dialog" class="settings-dialog">
+    <form method="dialog" id="settings-form">
+      <div class="dialog-heading"><div><p class="section-eyebrow">PREFERENZE</p><h2>Impostazioni</h2></div><button class="icon-button close-dialog" aria-label="Chiudi" value="cancel" type="submit">×</button></div>
+      <label for="instance-input">Istanza Invidious</label>
+      <input id="instance-input" class="settings-input" type="url" inputmode="url" placeholder="https://invidious.example" required>
+      <p class="setting-help">La ricerca usa le istanze pubbliche disponibili. Possono essere offline o limitare le richieste; TubeGround prova più sorgenti in sequenza.</p>
+      <div class="dialog-actions"><button id="reset-instance" class="button-secondary" type="button">Ripristina</button><button class="button-primary" value="save" type="submit">Salva</button></div>
+      <div class="settings-divider"></div>
+      <p class="setting-help">La riproduzione usa lo streaming diretto quando disponibile, senza costruire un file temporaneo completo. Alcuni video possono comunque non essere accessibili o compatibili.</p>
+    </form>
+  </dialog>
+
+  <dialog id="web-player-dialog" class="web-player-dialog">
+    <form method="dialog" class="web-player-close"><button class="icon-button" aria-label="Chiudi player" type="submit">×</button></form>
+    <div class="web-player-frame"><iframe id="web-player-frame" title="Player YouTube" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+    <p class="browser-note">Anteprima browser: la riproduzione in background richiede il player Android.</p>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>

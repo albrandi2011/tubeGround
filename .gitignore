@@ -1,0 +1,9 @@
+.build-tools/
+.gradle/
+local.properties
+app/build/
+build/
+dist/*.apk
+dist/*.sha256
+*.iml
+.DS_Store
